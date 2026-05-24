@@ -8,7 +8,6 @@ package controller;
  *
  * @author domtr
  */
-
 import packagee.Appointment;
 import packagee.AppointmentStatus;
 import packagee.Doctor;
@@ -59,13 +58,9 @@ public class AppointmentController {
 
         for (Appointment appointment : appointments) {
 
-            if (
-                    appointment.getDoctor().getId() == doctor.getId()
-                    &&
-                    appointment.getDatetime().equals(dateTime)
-                    &&
-                    appointment.getStatus() != AppointmentStatus.CANCELED
-            ) {
+            if (appointment.getDoctor().getId() == doctor.getId()
+                    && appointment.getDatetime().equals(dateTime)
+                    && appointment.getStatus() != AppointmentStatus.CANCELED) {
 
                 return Response.error(
                         400,
@@ -102,10 +97,8 @@ public class AppointmentController {
 
         for (Appointment appointment : appointments) {
 
-            if (
-                    appointment.getPatient().getId()
-                    == patient.getId()
-            ) {
+            if (appointment.getPatient().getId()
+                    == patient.getId()) {
 
                 count++;
             }
@@ -120,5 +113,98 @@ public class AppointmentController {
 
     public List<Appointment> getAppointments() {
         return appointments;
+    }
+
+    public Response acceptAppointment(String appointmentId) {
+
+        for (Appointment appointment : appointments) {
+
+            if (appointment.getId().equals(appointmentId)) {
+
+                appointment.setStatus(AppointmentStatus.PENDING);
+
+                return Response.ok("Cita aceptada");
+            }
+        }
+
+        return Response.error(404, "Cita no encontrada");
+    }
+
+    public Response completeAppointment(String appointmentId) {
+
+        for (Appointment appointment : appointments) {
+
+            if (appointment.getId().equals(appointmentId)) {
+
+                appointment.setStatus(AppointmentStatus.COMPLETED);
+
+                return Response.ok("Cita completada");
+            }
+        }
+
+        return Response.error(404, "Cita no encontrada");
+    }
+
+    public Response cancelAppointment(String appointmentId) {
+
+        for (Appointment appointment : appointments) {
+
+            if (appointment.getId().equals(appointmentId)) {
+
+                if (appointment.getStatus()
+                        == AppointmentStatus.COMPLETED) {
+
+                    return Response.error(
+                            400,
+                            "No se puede cancelar una cita completada"
+                    );
+                }
+
+                appointment.setStatus(AppointmentStatus.CANCELED);
+
+                return Response.ok("Cita cancelada");
+            }
+        }
+
+        return Response.error(404, "Cita no encontrada");
+    }
+
+    public Response rescheduleAppointment(
+            String appointmentId,
+            String newTime,
+            String reason
+    ) {
+
+        if (!Validator.isValidTime(newTime)) {
+
+            return Response.error(400, "Hora inválida");
+        }
+
+        for (Appointment appointment : appointments) {
+
+            if (appointment.getId().equals(appointmentId)) {
+
+                LocalDateTime currentDateTime
+                        = appointment.getDatetime();
+
+                LocalDateTime newDateTime
+                        = LocalDateTime.of(
+                                currentDateTime.toLocalDate(),
+                                java.time.LocalTime.parse(newTime)
+                        );
+
+                appointment.setDatetime(newDateTime);
+
+                appointment.setReason(
+                        appointment.getReason()
+                        + " | Reagendada: "
+                        + reason
+                );
+
+                return Response.ok("Cita reagendada");
+            }
+        }
+
+        return Response.error(404, "Cita no encontrada");
     }
 }

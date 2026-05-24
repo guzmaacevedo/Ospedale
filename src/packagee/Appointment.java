@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * @author edangulo
  */
 public class Appointment {
-    
+
     private final String id;
     private Patient patient;
     private Doctor doctor;
@@ -22,6 +22,14 @@ public class Appointment {
 
     public void setReason(String reason) {
         this.reason = reason;
+    }
+
+    public void setDatetime(LocalDateTime datetime) {
+        this.datetime = datetime;
+    }
+
+    public String getReason() {
+        return reason;
     }
     private boolean type;
     private ArrayList<Prescription> prescriptions;
@@ -94,5 +102,5 @@ public class Appointment {
     public boolean addPrescription(Prescription prescrip) {
         return this.prescriptions.add(prescrip);
     }
-    
+
 }
