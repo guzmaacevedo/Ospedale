@@ -8,11 +8,13 @@ package controller;
  *
  * @author domtr
  */
+
 import packagee.Appointment;
 import packagee.AppointmentStatus;
 import packagee.Doctor;
 import packagee.Patient;
 import packagee.Specialty;
+import packagee.Prescription;
 import response.Response;
 import util.Validator;
 import java.time.LocalDate;
@@ -202,6 +204,50 @@ public class AppointmentController {
                 );
 
                 return Response.ok("Cita reagendada");
+            }
+        }
+
+        return Response.error(404, "Cita no encontrada");
+    }
+
+    public Response prescribeMedication(
+            String appointmentId,
+            String medicationName,
+            double dose,
+            String administrationRoute,
+            int treatmentDuration,
+            String additionalInstructions,
+            int frequency
+    ) {
+
+        for (Appointment appointment : appointments) {
+
+            if (appointment.getId().equals(appointmentId)) {
+
+                if (appointment.getStatus()
+                        != AppointmentStatus.PENDING) {
+
+                    return Response.error(
+                            400,
+                            "La cita debe estar aceptada"
+                    );
+                }
+
+                Prescription prescription
+                        = new Prescription(
+                                appointment,
+                                medicationName,
+                                dose,
+                                administrationRoute,
+                                treatmentDuration,
+                                additionalInstructions,
+                                frequency
+                        );
+
+                return Response.ok(
+                        "Medicamento prescrito correctamente",
+                        prescription
+                );
             }
         }
 
