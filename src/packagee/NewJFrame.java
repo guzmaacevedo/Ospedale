@@ -9,6 +9,9 @@ import java.awt.Color;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
+import controller.PatientController;
+import response.Response;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 /**
@@ -22,6 +25,7 @@ public class NewJFrame extends javax.swing.JFrame {
     private ArrayList<User> users;
     private ArrayList<Hospitalization> hospitalizations;
     private ArrayList<Appointment> appointments;
+    private PatientController patientController;
 
     public NewJFrame() {
         initComponents();
@@ -30,6 +34,7 @@ public class NewJFrame extends javax.swing.JFrame {
 
         this.users = new ArrayList<>();
         this.users.add(new Administrator(0, "admin", "admin", "adnim", "admin123"));
+        this.patientController = new PatientController();
     }
 
     /**
@@ -420,18 +425,16 @@ public class NewJFrame extends javax.swing.JFrame {
             if (jTextField1.getText().equals(user.getUsername())) {
                 selectedUser = user;
                 if (selectedUser.getPassword().equals(jTextField2.getText())) {
-                    if (selectedUser instanceof Administrator ) {
-                        NewJFrame11 admin = new NewJFrame11(selectedUser,users,hospitalizations, appointments);
+                    if (selectedUser instanceof Administrator) {
+                        NewJFrame11 admin = new NewJFrame11(selectedUser, users, hospitalizations, appointments);
                         this.setVisible(false);
                         admin.setVisible(true);
-                    }
-                    else if (selectedUser instanceof Doctor ) {
-                        NewJFrame111 doctor = new NewJFrame111(selectedUser,(Doctor)selectedUser,users,hospitalizations,appointments);
+                    } else if (selectedUser instanceof Doctor) {
+                        NewJFrame111 doctor = new NewJFrame111(selectedUser, (Doctor) selectedUser, users, hospitalizations, appointments);
                         this.setVisible(false);
                         doctor.setVisible(true);
-                    }
-                    else {
-                        NewJFrame1 patient = new NewJFrame1(selectedUser,(Patient) selectedUser,users,appointments, hospitalizations);
+                    } else {
+                        NewJFrame1 patient = new NewJFrame1(selectedUser, (Patient) selectedUser, users, appointments, hospitalizations);
                         this.setVisible(false);
                         patient.setVisible(true);
                     }
@@ -442,22 +445,46 @@ public class NewJFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        
         String firstname = jTextField3.getText();
         String lastname = jTextField4.getText();
-        long id = Long.parseLong(jTextField5.getText());
-        boolean gender = (jComboBox1.getSelectedIndex() == 0 ? null : (jComboBox1.getSelectedIndex() == 1 ));
+        String id = jTextField5.getText();
         String birth = jTextField12.getText();
-        String address = jTextField11.getText();
-        long phone = Long.parseLong(jTextField6.getText());
+        String phone = jTextField6.getText();
         String email = jTextField7.getText();
         String user = jTextField8.getText();
         String password = jTextField9.getText();
-        String comPassword = jTextField10.getText();
-        LocalDate birthdate = LocalDate.of(Integer.parseInt(birth.substring(0, 4)), Integer.parseInt(birth.substring(5, 7)), Integer.parseInt(birth.substring(8)));
-        if (comPassword.equals(password)) {
-            users.add(new Patient(id, user, firstname, lastname, password, email, birthdate, gender, phone, address));
+        String confirmPassword = jTextField10.getText();
+
+        Response response = patientController.registerPatient(
+                id,
+                firstname + " " + lastname,
+                user,
+                password,
+                confirmPassword,
+                phone,
+                email,
+                birth
+        );
+
+        JOptionPane.showMessageDialog(
+                null,
+                response.getMessage()
+        );
+
+        if (response.isSuccess()) {
+
+            jTextField3.setText("");
+            jTextField4.setText("");
+            jTextField5.setText("");
+            jTextField6.setText("");
+            jTextField7.setText("");
+            jTextField8.setText("");
+            jTextField9.setText("");
+            jTextField10.setText("");
+            jTextField11.setText("");
+            jTextField12.setText("");
         }
-        
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jTextField10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField10ActionPerformed
