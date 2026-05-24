@@ -10,6 +10,8 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
 import controller.PatientController;
+import controller.LoginController;
+import controller.DoctorController;
 import response.Response;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -26,6 +28,7 @@ public class NewJFrame extends javax.swing.JFrame {
     private ArrayList<Hospitalization> hospitalizations;
     private ArrayList<Appointment> appointments;
     private PatientController patientController;
+    private LoginController loginController;
 
     public NewJFrame() {
         initComponents();
@@ -35,6 +38,7 @@ public class NewJFrame extends javax.swing.JFrame {
         this.users = new ArrayList<>();
         this.users.add(new Administrator(0, "admin", "admin", "adnim", "admin123"));
         this.patientController = new PatientController();
+        this.loginController = new LoginController();
     }
 
     /**
@@ -420,32 +424,71 @@ public class NewJFrame extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        User selectedUser = null;
-        for (User user : this.users) {
-            if (jTextField1.getText().equals(user.getUsername())) {
-                selectedUser = user;
-                if (selectedUser.getPassword().equals(jTextField2.getText())) {
-                    if (selectedUser instanceof Administrator) {
-                        NewJFrame11 admin = new NewJFrame11(selectedUser, users, hospitalizations, appointments);
-                        this.setVisible(false);
-                        admin.setVisible(true);
-                    } else if (selectedUser instanceof Doctor) {
-                        NewJFrame111 doctor = new NewJFrame111(selectedUser, (Doctor) selectedUser, users, hospitalizations, appointments);
-                        this.setVisible(false);
-                        doctor.setVisible(true);
-                    } else {
-                        NewJFrame1 patient = new NewJFrame1(selectedUser, (Patient) selectedUser, users, appointments, hospitalizations);
-                        this.setVisible(false);
-                        patient.setVisible(true);
-                    }
-                }
-            }
+        String username = jTextField1.getText();
+        String password = jTextField2.getText();
+
+        Response response = loginController.login(
+                username,
+                password,
+                patientController,
+                new DoctorController()
+        );
+
+        if (!response.isSuccess()) {
+
+            JOptionPane.showMessageDialog(
+                    null,
+                    response.getMessage()
+            );
+
+            return;
         }
 
+        Object user = response.getData();
+
+        if (user instanceof Administrator) {
+
+            NewJFrame11 admin
+                    = new NewJFrame11(
+                            (User) user,
+                            users,
+                            hospitalizations,
+                            appointments
+                    );
+
+            this.setVisible(false);
+            admin.setVisible(true);
+        } else if (user instanceof Doctor) {
+
+            NewJFrame111 doctor
+                    = new NewJFrame111(
+                            (User) user,
+                            (Doctor) user,
+                            users,
+                            hospitalizations,
+                            appointments
+                    );
+
+            this.setVisible(false);
+            doctor.setVisible(true);
+        } else {
+
+            NewJFrame1 patient
+                    = new NewJFrame1(
+                            (User) user,
+                            (Patient) user,
+                            users,
+                            appointments,
+                            hospitalizations
+                    );
+
+            this.setVisible(false);
+            patient.setVisible(true);
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        
+
         String firstname = jTextField3.getText();
         String lastname = jTextField4.getText();
         String id = jTextField5.getText();
