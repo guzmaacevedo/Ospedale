@@ -440,6 +440,7 @@ public class NewJFrame11 extends javax.swing.JFrame {
             Specialty specialty = Specialty.valueOf(
                     spec.replaceAll(" &", "")
                             .replaceAll(" ", "_")
+                            .toUpperCase()
             );
 
             Response response
@@ -466,6 +467,8 @@ public class NewJFrame11 extends javax.swing.JFrame {
                         = (Doctor) response.getData();
 
                 users.add(doctor);
+                
+                jComboBox2.addItem(String.valueOf(doctor.getId()));
 
                 jTextField3.setText("");
                 jTextField4.setText("");

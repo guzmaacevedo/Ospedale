@@ -72,7 +72,7 @@ public class DoctorController {
 
         doctors.add(doctor);
 
-        return Response.ok("Doctor registrado correctamente");
+        return Response.ok("Doctor registrado correctamente", doctor);
     }
 
     public List<Doctor> getDoctors() {
