@@ -517,6 +517,9 @@ public class NewJFrame extends javax.swing.JFrame {
 
         if (response.isSuccess()) {
 
+            Patient patient = (Patient) response.getData();
+            users.add(patient);
+
             jTextField3.setText("");
             jTextField4.setText("");
             jTextField5.setText("");

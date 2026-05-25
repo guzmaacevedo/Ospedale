@@ -75,7 +75,7 @@ public class PatientController {
 
         patients.add(patient);
 
-        return Response.ok("Paciente registrado correctamente");
+        return Response.ok("Paciente registrado correctamente", patient);
     }
 
     public List<Patient> getPatients() {

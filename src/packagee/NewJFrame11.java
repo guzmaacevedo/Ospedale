@@ -31,6 +31,7 @@ public class NewJFrame11 extends javax.swing.JFrame {
         this.hospitalizations = hospitalizations;
         this.appointments = appointments;
         this.doctorController = new DoctorController();
+        loadUsersInComboBoxes();
         this.setBackground(new Color(0, 0, 0, 0));
         this.setLocationRelativeTo(null);
     }
@@ -467,7 +468,7 @@ public class NewJFrame11 extends javax.swing.JFrame {
                         = (Doctor) response.getData();
 
                 users.add(doctor);
-                
+
                 jComboBox2.addItem(String.valueOf(doctor.getId()));
 
                 jTextField3.setText("");
@@ -495,7 +496,7 @@ public class NewJFrame11 extends javax.swing.JFrame {
         Doctor temp = null;
         for (User use : this.users) {
             if (use.getId() == idDoctor) {
-                temp = (Doctor) user;
+                temp = (Doctor) use;
             }
         }
         NewJFrame111 doctor = new NewJFrame111(user, temp, users, hospitalizations, appointments);
@@ -511,11 +512,11 @@ public class NewJFrame11 extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        long idPatient = Long.parseLong(jComboBox2.getItemAt(jComboBox2.getSelectedIndex()));
+        long idPatient = Long.parseLong(jComboBox3.getItemAt(jComboBox3.getSelectedIndex()));
         Patient temp = null;
         for (User use : this.users) {
             if (use.getId() == idPatient) {
-                temp = (Patient) user;
+                temp = (Patient) use;
             }
         }
         NewJFrame1 patient = new NewJFrame1(user, temp, users, appointments, hospitalizations);
@@ -523,6 +524,23 @@ public class NewJFrame11 extends javax.swing.JFrame {
         patient.setVisible(true);
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void loadUsersInComboBoxes() {
+        jComboBox2.removeAllItems();
+        jComboBox3.removeAllItems();
+
+        jComboBox2.addItem("Select one");
+        jComboBox3.addItem("Select one");
+
+        for (User currentUser : users) {
+            if (currentUser instanceof Doctor) {
+                jComboBox2.addItem(String.valueOf(currentUser.getId()));
+            }
+
+            if (currentUser instanceof Patient) {
+                jComboBox3.addItem(String.valueOf(currentUser.getId()));
+            }
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
